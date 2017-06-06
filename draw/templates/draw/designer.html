@@ -1,0 +1,38 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta charset="utf-8">
+    <title>CutScript</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  </head>
+
+  <body>
+
+    <div id="container">
+      <h1>CutScript Designer</h1>
+      <canvas id="canvas" width="800" height="600">
+        Sorry, your browser does not support the canvas tag.
+      </canvas>
+      <form id="saveform" method="POST" class="post-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button id="savebutton" type="submit" class="save btn btn-default">Save</button>
+      </form>
+      <div id="buttons">
+        <button id="run" onclick="run()">Run</button>
+        <button id="coords" onclick="toggleCoords()">Numbers:On</button>
+      </div>
+      <div id="dxf">
+        <textarea id="dxfArea" class="textArea" rows="8" cols="50"></textarea>
+        <label>The generated code above is dxf format.</label>
+        <p><a href="{% url 'drawing_list' %}">Return to list of designs</a></p>
+      </div>
+    </div> <!-- End of container -->
+    
+    <script src="{% static 'js/main.js' %}"></script>
+
+  </body>
+  
+</html>

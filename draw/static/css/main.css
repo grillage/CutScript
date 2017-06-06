@@ -1,0 +1,45 @@
+body{
+    background-color: azure;
+    font-family: "Arial", sans-serif;
+    font-size: 14px;
+}
+#container{
+    width: 1200px;
+    height: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#canvas{
+    background-color: white;
+    border: 1px solid;
+}
+#saveform{
+    position: relative;
+    left: 807px;
+    width: 392px;
+    top: -600px;
+}
+input{
+    width: 100%;
+}
+#savebutton{
+    position: relative;
+    left: 146px;
+}
+#buttons{
+    position: relative;
+    left: 807px;
+    top: -623px;
+    width: 145px;
+}
+#dxf{
+    position: relative;
+    left: 807px;
+    top: -565px;
+    width: 392px;
+}
+textArea{
+    width: 100%;
+    border: 1px solid;
+    resize: none;
+}
