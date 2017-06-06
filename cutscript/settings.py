@@ -25,7 +25,7 @@ SECRET_KEY = '34it((dwq=e9ajasb8@lih82$=_x&koh!k#&ixd(1r#uvc=a!t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [grillage.pythonanywhere.com]
 
 
 # Application definition
