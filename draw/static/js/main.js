@@ -256,7 +256,7 @@ function drawEllipse(codeLine){
 
             // Do dxf here since the dxf ellipse is dependent on orientation
             dxfWindow.value = dxfWindow.value + "0\nELLIPSE\n10\n" + x + "\n20\n" + y + 
-                                                "\n11\n" + (width/2) + "\n21\n" + y + "\n40\n" + 1/xScale + 
+                                                "\n11\n" + (width/2) + "\n21\n0\n40\n" + 1/xScale + 
                                                 "\n41\n0\n42\n6.283185307179586\n";
         }
         else if (height > width){
@@ -265,7 +265,7 @@ function drawEllipse(codeLine){
             var radius = width/2;
             var xScale = 1;
             dxfWindow.value = dxfWindow.value + "0\nELLIPSE\n10\n" + x + "\n20\n" + y + 
-                                                "\n11\n" + (height/2) + "\n21\n" + x + "\n40\n" + 1/yScale + 
+                                                "\n11\n" + (height/2) + "\n21\n0\n40\n" + 1/yScale + 
                                                 "\n41\n0\n42\n6.283185307179586\n";
         }
         else {  // width = height
