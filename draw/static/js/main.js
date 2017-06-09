@@ -2,6 +2,7 @@ var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
 var dxfWindow = document.getElementById("dxfArea");
 var showCoords = true;
+var dxfLayer = "BLACK";
 
 // Start by setting up the canvas and adding the stub dxf
 run();
@@ -9,8 +10,18 @@ run();
 // Main function called when the user presses the run button
 function run(){
     clearCanvas();
-    dxfWindow.value = "0\nSECTION\n2\nHEADER\n9\n$EXTMIN\n10\n-400\n20\n-300\n30\n0\n9\n$EXTMAX\n" +
-                        "10\n400\n20\n300\n30\n0\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n";
+    
+    // dxf Header Section
+    dxfWindow.value = "0\nSECTION\n2\nHEADER\n9\n$EXTMIN\n10\n-400\n20\n-300\n" + 
+                        "30\n0\n9\n$EXTMAX\n10\n400\n20\n300\n30\n0\n0\nENDSEC\n" 
+    // dxf Tables Section
+    dxfWindow.value += "0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n5\n" + 
+                        "0\nLAYER\n2\n0\n62\n7\n0\nLAYER\n2\nBLUE\n62\n5\n" + 
+                        "0\nLAYER\n2\nRED\n62\n1\n0\nLAYER\n2\nGREEN\n62\n3\n" + 
+                        "0\nLAYER\n2\nBLACK\n62\n250\n0\nENDTAB\n0\nENDSEC\n"
+    // dxf Entities Section
+    dxfWindow.value += "0\nSECTION\n2\nENTITIES\n";
+
     var codeWindow = document.getElementById("id_code");
     var lineArray = codeWindow.value.split("\n");
     for(i=0; i<lineArray.length; i++){
@@ -104,6 +115,7 @@ function setDrawColour(codeLine){
     var newColour = codeLine.slice(8, endLoc).toLowerCase();
     if(newColour == "black" || newColour == "blue" || newColour == "red" || newColour == "green"){
         ctx.strokeStyle = newColour;
+        dxfLayer = newColour.toUpperCase();
     }
 }
 
@@ -122,7 +134,7 @@ function drawLine(codeLine){
         ctx.stroke();
 
         // Add entry to the dxf window
-        dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + x1 + "\n20\n" + y1 + 
+        dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + x1 + "\n20\n" + y1 + 
                                             "\n11\n" + x2 + "\n21\n" + y2 + "\n";
     }
 }
@@ -146,11 +158,11 @@ function drawArc(codeLine){
         // The dxf format does seem to like full 360 degree arcs
         // So we create a dxf circle in that instance
         if(endAngle - startAngle == 360){
-        dxfWindow.value = dxfWindow.value + "0\nCIRCLE\n10\n" + x + "\n20\n" + y + 
+        dxfWindow.value = dxfWindow.value + "0\nCIRCLE\n8\n" + dxfLayer + "\n10\n" + x + "\n20\n" + y + 
                                             "\n40\n" + radius + "\n";
         }
         else{
-        dxfWindow.value = dxfWindow.value + "0\nARC\n10\n" + x + "\n20\n" + y + 
+        dxfWindow.value = dxfWindow.value + "0\nARC\n8\n" + dxfLayer + "\n10\n" + x + "\n20\n" + y + 
                                             "\n40\n" + radius + 
                                             "\n50\n" + startAngle + "\n51\n" + endAngle + "\n";
         }
@@ -188,13 +200,13 @@ function drawRect(codeLine){
             ctx.stroke();
 
             // Add entry to the dxf window using 4 lines since there is no dxf rect equivalent
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + x1 + "\n20\n" + y1 +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + x1 + "\n20\n" + y1 +
                                                 "\n11\n" + x1 + "\n21\n" + y2 + "\n";
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + x1 + "\n20\n" + y2 +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + x1 + "\n20\n" + y2 +
                                                 "\n11\n" + x2 + "\n21\n" + y2 + "\n";
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + x2 + "\n20\n" + y2 +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + x2 + "\n20\n" + y2 +
                                                 "\n11\n" + x2 + "\n21\n" + y1 + "\n";
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + x2 + "\n20\n" + y1 +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + x2 + "\n20\n" + y1 +
                                             "\n11\n" + x1 + "\n21\n" + y1 + "\n";   
         }
         else {   // Draw a bevelled rectangle
@@ -216,22 +228,22 @@ function drawRect(codeLine){
 
             // Now do the dxf for the bevelled rectangle
             // First do the lines
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + x1 + "\n20\n" + (y1+radius) +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + x1 + "\n20\n" + (y1+radius) +
                                                 "\n11\n" + x1 + "\n21\n" + (y2-radius) + "\n";
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + (x1+radius) + "\n20\n" + y2 +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + (x1+radius) + "\n20\n" + y2 +
                                                 "\n11\n" + (x2-radius) + "\n21\n" + y2 + "\n";
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + x2 + "\n20\n" + (y2-radius) +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + x2 + "\n20\n" + (y2-radius) +
                                                 "\n11\n" + x2 + "\n21\n" + (y1+radius) + "\n";
-            dxfWindow.value = dxfWindow.value + "0\nLINE\n10\n" + (x2-radius) + "\n20\n" + y1 +
+            dxfWindow.value = dxfWindow.value + "0\nLINE\n8\n" + dxfLayer + "\n10\n" + (x2-radius) + "\n20\n" + y1 +
                                             "\n11\n" + (x1+radius) + "\n21\n" + y1 + "\n"; 
             // Now the arcs
-            dxfWindow.value = dxfWindow.value + "0\nARC\n10\n" + (x1+radius) + "\n20\n" + (y1+radius) + 
+            dxfWindow.value = dxfWindow.value + "0\nARC\n8\n" + dxfLayer + "\n10\n" + (x1+radius) + "\n20\n" + (y1+radius) + 
                                             "\n40\n" + radius + "\n50\n180\n51\n270\n";
-            dxfWindow.value = dxfWindow.value + "0\nARC\n10\n" + (x1+radius) + "\n20\n" + (y2-radius) + 
+            dxfWindow.value = dxfWindow.value + "0\nARC\n8\n" + dxfLayer + "\n10\n" + (x1+radius) + "\n20\n" + (y2-radius) + 
                                             "\n40\n" + radius + "\n50\n90\n51\n180\n";
-            dxfWindow.value = dxfWindow.value + "0\nARC\n10\n" + (x2-radius) + "\n20\n" + (y2-radius) + 
+            dxfWindow.value = dxfWindow.value + "0\nARC\n8\n" + dxfLayer + "\n10\n" + (x2-radius) + "\n20\n" + (y2-radius) + 
                                             "\n40\n" + radius + "\n50\n0\n51\n90\n"; 
-            dxfWindow.value = dxfWindow.value + "0\nARC\n10\n" + (x2-radius) + "\n20\n" + (y1+radius) + 
+            dxfWindow.value = dxfWindow.value + "0\nARC\n8\n" + dxfLayer + "\n10\n" + (x2-radius) + "\n20\n" + (y1+radius) + 
                                             "\n40\n" + radius + "\n50\n270\n51\n0\n";                                                               
         }                            
     }
@@ -255,7 +267,7 @@ function drawEllipse(codeLine){
             var yScale = 1;
 
             // Do dxf here since the dxf ellipse is dependent on orientation
-            dxfWindow.value = dxfWindow.value + "0\nELLIPSE\n10\n" + x + "\n20\n" + y + 
+            dxfWindow.value = dxfWindow.value + "0\nELLIPSE\n8\n" + dxfLayer + "\n10\n" + x + "\n20\n" + y + 
                                                 "\n11\n" + (width/2) + "\n21\n0\n40\n" + 1/xScale + 
                                                 "\n41\n0\n42\n6.283185307179586\n";
         }
@@ -264,13 +276,13 @@ function drawEllipse(codeLine){
             ctx.scale(1, yScale);
             var radius = width/2;
             var xScale = 1;
-            dxfWindow.value = dxfWindow.value + "0\nELLIPSE\n10\n" + x + "\n20\n" + y + 
+            dxfWindow.value = dxfWindow.value + "0\nELLIPSE\n8\n" + dxfLayer + "\n10\n" + x + "\n20\n" + y + 
                                                 "\n11\n" + (height/2) + "\n21\n0\n40\n" + 1/yScale + 
                                                 "\n41\n0\n42\n6.283185307179586\n";
         }
         else {  // width = height
             radius = width/2;  // just a circle
-            dxfWindow.value = dxfWindow.value + "0\nCIRCLE\n10\n" + x + "\n20\n" + y + 
+            dxfWindow.value = dxfWindow.value + "0\nCIRCLE\n8\n" + dxfLayer + "\n10\n" + x + "\n20\n" + y + 
                                             "\n40\n" + radius + "\n";
         }
         
